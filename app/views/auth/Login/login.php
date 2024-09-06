@@ -32,7 +32,7 @@
 
                 <div class="entrar">
                     <p>Ainda não tem uma conta? <a href="../Register/register.php">Crie uma.</a></p>
-                    <input type="submit" value="Entrar">
+                    <input type="submit" name="btnlogar" value="Entrar">
                 </div>
             </form>
 
@@ -43,3 +43,31 @@
 </body>
 
 </html>
+
+<?php
+if (isset($_POST['btnlogar'])) {
+    $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
+    $senha = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_STRING);
+
+    include_once '../../../class/Usuario.php';
+    $user = new Usuario();
+
+    $user->setEmail(trim($email));
+    $user->setSenha(trim($senha));
+
+    if (count($user->consultar()) <= 0) {
+        echo '<div class="col-sm-12 col-md-12">'
+            . '<div class="alert alert-danger" role="alert">'
+            . '<h3>E-mail e/ou senha incorreta(s)</h3>'
+            . '<p>Verifique seu email e senha!</p>'
+            . '</div>'
+            . '</div>';
+    } else {
+        session_start();
+        $_SESSION['acesso'] = 'b8d66a4634503dcf530ce1b3704ca5dfae3d34bb';
+
+        header("Location: index.php");
+        exit();
+    }
+}
+?>
